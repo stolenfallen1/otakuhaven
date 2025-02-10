@@ -26,7 +26,7 @@ export async function POST(request: Request) {
             role: user.role,
         })
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             user: {
                 id: user.id,
                 name: user.name,
@@ -35,7 +35,18 @@ export async function POST(request: Request) {
                 emailVerified: user.emailVerified,
             },
             token,
-        })
+        });
+
+        response.cookies.set({
+            name: 'token',
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24, 
+        });
+
+        return response;
 
     } catch(error) {
         console.error('Login error: ', error);
