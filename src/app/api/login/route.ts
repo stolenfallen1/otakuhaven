@@ -9,10 +9,19 @@ export async function POST(request: Request) {
 
         const user = await prisma.user.findUnique({
             where: { email }
-        })
+        });
 
         if (!user) {
             return NextResponse.json({ message: 'Invalid credentials. Check email or password' }, { status: 401 });
+        }
+
+        if (!user.emailVerified) {
+            return NextResponse.json({ 
+                message: 'Please verify your email before logging in',
+                isVerified: false,
+                email: user.email,
+                canResend: true
+            }, { status: 401 });
         }
 
         const isValidPassword = await verifyPassword(password, user.password);
@@ -24,7 +33,7 @@ export async function POST(request: Request) {
             id: user.id,
             email: user.email,
             role: user.role,
-        })
+        });
 
         const response = NextResponse.json({
             user: {
@@ -43,7 +52,8 @@ export async function POST(request: Request) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 60 * 60 * 24, 
+            maxAge: 60 * 60 * 24, // 24 hours
+            path: '/'
         });
 
         return response;

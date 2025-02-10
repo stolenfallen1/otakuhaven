@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/utils/hash_password";
-import { signJWT } from "@/utils/jwt";
 import crypto from 'crypto';
+import { sendVerificationEmail } from "@/lib/mail";
 
 export async function POST(request: Request) {
     try {
@@ -35,13 +35,16 @@ export async function POST(request: Request) {
             }
         })
 
-        const token = signJWT({
-            id: user.id,
-            email: user.email,
-            role: user.role,
-        })
+        try {
+            await sendVerificationEmail(email, name, verificationToken);
+        } catch (emailError) {
+            console.error('Failed to send verification email:', emailError);
+        }
 
-        return NextResponse.json({ user, token })
+        return NextResponse.json({ 
+            user, 
+            message: 'Registration successful, please verify your email to continue.' 
+        })
 
     } catch(error) {
         console.error('Registration error: ', error);
