@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -58,7 +59,11 @@ export default function SignUp() {
 
     return (
         <div className="container mx-auto max-w-md px-4 py-16">
-            <h1 className="text-3xl font-bold text-center mb-8">Sign Up</h1>
+            <section className="text-center pb-6">    
+                <Link href="/" className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                    OtakuHaven
+                </Link>
+            </section>
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
@@ -66,56 +71,56 @@ export default function SignUp() {
             )}
             <form onSubmit={onRegister} className="space-y-4">
                 <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">
+                    <label htmlFor="name" className="text-sm font-medium text-foreground">
                         Full Name
                     </label>
                     <input
                         id="name"
                         name="name"
                         type="text"
-                        className="w-full px-3 py-2 border rounded-md"
+                        className="w-full px-3 py-2 border rounded-md bg-background text-foreground border-border focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium">
+                    <label htmlFor="email" className="text-sm font-medium text-foreground">
                         Email
                     </label>
                     <input
                         id="email"
                         name="email"
                         type="email"
-                        className="w-full px-3 py-2 border rounded-md"
+                        className="w-full px-3 py-2 border rounded-md bg-background text-foreground border-border focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label htmlFor="password" className="text-sm font-medium">
+                    <label htmlFor="password" className="text-sm font-medium text-foreground">
                         Password
                     </label>
                     <input
                         id="password"
                         name="password"
                         type="password"
-                        className="w-full px-3 py-2 border rounded-md"
+                        className="w-full px-3 py-2 border rounded-md bg-background text-foreground border-border focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         required
                     />
                 </div>
                 <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="text-sm font-medium">
+                    <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
                         Confirm Password
                     </label>
                     <input
                         id="confirmPassword"
                         name="confirmPassword"
                         type="password"
-                        className="w-full px-3 py-2 border rounded-md"
+                        className="w-full px-3 py-2 border rounded-md bg-background text-foreground border-border focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                         required
                     />
                 </div>
                 <Button 
                     type="submit" 
-                    className="w-full"
+                    className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                     disabled={loading}
                 >
                     {loading ? "Signing up..." : "Sign Up"}
