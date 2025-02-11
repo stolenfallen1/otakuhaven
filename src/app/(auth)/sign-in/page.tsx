@@ -27,7 +27,7 @@ export default function SignIn() {
         }
 
         try {
-            const res = await fetch("/api/login", {
+            const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export default function SignIn() {
         setResendLoading(true);
         
         try {
-            const res = await fetch('/api/resend-verification', {
+            const res = await fetch('/api/auth/resend-verification', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: userEmail }),
