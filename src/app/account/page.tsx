@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileTab } from "./components/profile-tab";
 import { AddressTab } from "./components/address-tab";
@@ -9,7 +10,11 @@ import { SettingsTab } from "./components/settings-tab";
 export default function AccountPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6">My Account</h1>
+            <section className="text-center pb-6">    
+                <Link href="/" className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                    OtakuHaven
+                </Link>
+            </section>
             
             <Tabs defaultValue="profile" className="space-y-4">
                 <TabsList className="flex flex-col sm:flex-row w-full sm:w-auto h-auto">

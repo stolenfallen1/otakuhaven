@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignIn() {
     const router = useRouter();
@@ -13,6 +14,7 @@ export default function SignIn() {
     const [userEmail, setUserEmail] = React.useState<string>("");
     const [resendLoading, setResendLoading] = React.useState<boolean>(false);
     const [resendSuccess, setResendSuccess] = React.useState<boolean>(false);
+    const { toast } = useToast();
 
     async function onLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -45,6 +47,12 @@ export default function SignIn() {
             }
 
             localStorage.setItem("token", response.token);
+            toast({
+                variant: "success",
+                title: "Success",
+                description: "Welcome to OtakuHaven",
+                duration: 1500,
+            })
             router.push("/");
 
         } catch(error: any) {
