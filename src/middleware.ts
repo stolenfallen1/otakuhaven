@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
-    if (path.startsWith('/account') || path.startsWith('/orders')) {
+    if (path.startsWith('/admin') || path.startsWith('/account') || path.startsWith('/orders')) {
         if (!token) {
             return NextResponse.redirect(new URL('/sign-in', request.url))
         }
@@ -34,5 +34,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/sign-in', '/sign-up', '/account/:path*', '/orders/:path*']
+    matcher: ['/sign-in', '/sign-up', '/account/:path*', '/orders/:path*', '/admin/:path*']
 }
