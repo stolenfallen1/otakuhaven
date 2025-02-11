@@ -2,10 +2,29 @@ import Link from "next/link";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { cookies } from "next/headers";
 import { ClientLogoutButton } from "@/components/client-logout-button";
+import { prisma } from "@/lib/prisma";
+import { verifyJWT } from "@/utils/jwt";
+
+async function getUser(token: string) {
+    try {
+        const payload = await verifyJWT(token);
+        if (!payload || !('id' in payload)) return null;
+        
+        const user = await prisma.user.findUnique({
+            where: { id: payload.id as string },
+            select: { role: true }
+        });
+        
+        return user;
+    } catch {
+        return null;
+    }
+}
 
 export default async function HomeHeader() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token");
+    const user = token ? await getUser(token.value) : null;
 
     return (
         <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b dark:border-border">
@@ -18,6 +37,11 @@ export default async function HomeHeader() {
                 <div className="flex items-center gap-4">
                     {token ? (
                         <>
+                            {user?.role === "ADMIN" && (
+                                <Link href="/admin" className="text-foreground/60 hover:text-purple-600 dark:hover:text-purple-400">
+                                    Admin Dashboard
+                                </Link>
+                            )}
                             <Link href="/account" className="text-foreground/60 hover:text-purple-600 dark:hover:text-purple-400">
                                 Account
                             </Link>

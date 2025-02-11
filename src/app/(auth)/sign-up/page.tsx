@@ -4,11 +4,13 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SignUp() {
     const router = useRouter();
     const [loading, setLoading] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string>("");
+    const { toast } = useToast();
 
     async function onRegister(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -30,7 +32,7 @@ export default function SignUp() {
         }
 
         try {
-            const res = await fetch("/api/register", {
+            const res = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -47,6 +49,12 @@ export default function SignUp() {
                 throw new Error(response.message);
             }
 
+            toast({
+                variant: "success",
+                title: "Success",
+                description: "Successful Registration. Check your email for a verification link.",
+                duration: 2000,
+            })
             router.push("/sign-in");
 
         } catch(error: any) {

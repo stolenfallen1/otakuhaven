@@ -10,7 +10,7 @@ export const transporter = nodemailer.createTransport({
 });
 
 export async function sendVerificationEmail(to: string, name: string, token: string) {
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${token}`;
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}`;
     
     await transporter.sendMail({
         from: '"OtakuHaven" <noreply@otakuhaven.com>',
