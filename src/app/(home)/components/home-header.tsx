@@ -18,7 +18,7 @@ export default async function HomeHeader() {
                 <div className="flex items-center gap-4">
                     {token ? (
                         <>
-                            <Link href="/" className="text-foreground/60 hover:text-purple-600 dark:hover:text-purple-400">
+                            <Link href="/account" className="text-foreground/60 hover:text-purple-600 dark:hover:text-purple-400">
                                 Account
                             </Link>
                             <ClientLogoutButton />
