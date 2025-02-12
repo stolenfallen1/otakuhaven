@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SignIn() {
-    const router = useRouter();
     const [loading, setLoading] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string>("");
     const [needsVerification, setNeedsVerification] = React.useState<boolean>(false);
@@ -15,6 +14,7 @@ export default function SignIn() {
     const [resendLoading, setResendLoading] = React.useState<boolean>(false);
     const [resendSuccess, setResendSuccess] = React.useState<boolean>(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     async function onLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -47,13 +47,17 @@ export default function SignIn() {
             }
 
             localStorage.setItem("token", response.token);
+
             toast({
                 variant: "success",
                 title: "Success",
                 description: "Welcome to OtakuHaven",
-                duration: 1500,
-            })
+                duration: 1000,
+            });
+
             router.push("/");
+            router.refresh();
+
 
         } catch(error: any) {
             setError(error.message || "Something went wrong");
