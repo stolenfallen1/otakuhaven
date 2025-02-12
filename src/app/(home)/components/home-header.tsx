@@ -27,7 +27,7 @@ export default async function HomeHeader() {
     const user = token ? await getUser(token.value) : null;
 
     return (
-        <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b dark:border-border">
+        <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b dark:border-border">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <Link href="/" className="text-3xl font-bold text-purple-600 dark:text-purple-400">
