@@ -43,7 +43,7 @@ export async function POST(request: Request) {
                 role: user.role,
                 emailVerified: user.emailVerified,
             },
-            token,
+            token
         });
 
         response.cookies.set({

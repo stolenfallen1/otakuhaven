@@ -12,6 +12,7 @@ export function ClientLogoutButton() {
         });
 
         if (res.ok) {
+            localStorage.removeItem("token"); 
             router.refresh();
         }
     }
@@ -20,7 +21,7 @@ export function ClientLogoutButton() {
         <Button 
             variant="ghost" 
             onClick={handleLogout}
-            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+            className="px-4 py-2 bg-purple-600 text-white dark:text-black rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
         >
             Logout
         </Button>
