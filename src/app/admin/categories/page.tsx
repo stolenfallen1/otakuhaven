@@ -42,14 +42,15 @@ export default async function CategoriesPage() {
                 <table className="min-w-full divide-y divide-border">
                     <thead className="bg-muted">
                         <tr>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground w-full">Name</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Name</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Description</th>
                             <th className="px-6 py-3 text-right text-sm font-semibold text-foreground">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                         {categories.length === 0 ? (
                             <tr>
-                                <td colSpan={2} className="px-6 py-4 text-center text-sm text-muted-foreground">
+                                <td colSpan={3} className="px-6 py-4 text-center text-sm text-muted-foreground">
                                     No categories found
                                 </td>
                             </tr>
@@ -57,6 +58,7 @@ export default async function CategoriesPage() {
                             categories.map((category) => (
                                 <tr key={category.id}>
                                     <td className="px-6 py-4 text-sm">{category.name}</td>
+                                    <td className="px-6 py-4 text-sm">{category.description}</td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end gap-2">
                                             <CategoryDialog category={category} />

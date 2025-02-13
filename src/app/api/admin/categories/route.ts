@@ -28,10 +28,10 @@ export async function POST(request: Request) {
         }
 
         // Create category
-        const { name } = await request.json();
+        const { name, description } = await request.json();
 
-        if (!name || typeof name !== "string") {
-            return NextResponse.json({ error: "Name is required" }, { status: 400 });
+        if (!name || !description && (typeof name !== "string" || typeof description !== "string")) {
+            return NextResponse.json({ error: "Name and description are required" }, { status: 400 });
         }
 
         const existingCategory = await prisma.category.findUnique({
@@ -43,7 +43,10 @@ export async function POST(request: Request) {
         }
 
         const category = await prisma.category.create({
-            data: { name: name.trim() }
+            data: { 
+                name: name.trim(),
+                description: description.trim()
+            }
         });
 
         return NextResponse.json(category);

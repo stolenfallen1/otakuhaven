@@ -1,10 +1,17 @@
-import { categories } from "@/constants/categories";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
-export default function CategoryPage({ params }: { params: { slug: string }; }) {
-    const category = categories.find(
-        (cat) => cat.slug === params.slug
-    );
+export default async function CategoryPage({ params }: { params: { slug: string }; }) {
+    const category = await prisma.category.findFirst({
+        where: {
+            name: {
+                equals: params.slug.charAt(0).toUpperCase() + params.slug.slice(1),
+            }
+        },
+        include: {
+            products: true
+        }
+    });
 
     if (!category) {
         notFound();
@@ -16,16 +23,33 @@ export default function CategoryPage({ params }: { params: { slug: string }; }) 
                 <h1 className="text-4xl font-bold mb-4 text-foreground">{category.name}</h1>
                 <p className="text-muted-foreground mb-8">{category.description}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {/* Product listing for this category will go here */}
-                    <p className="text-muted-foreground">Products coming soon...</p>
+                    {category.products.length === 0 ? (
+                        <p className="text-muted-foreground">No products available in this category.</p>
+                    ) : (
+                        category.products.map((product) => (
+                            <div key={product.id} className="border rounded-lg p-4">
+                                <h2>{product.name}</h2>
+                                <p>${product.price}</p>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>
     );
 }
 
-export function generateStaticParams() {
-    return categories.map((category) => ({
-        slug: category.slug,
-    }));
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+    const category = await prisma.category.findFirst({
+        where: {
+            name: {
+                equals: params.slug.charAt(0).toUpperCase() + params.slug.slice(1),
+            }
+        }
+    });
+
+    return {
+        title: category ? `${category.name} - Otaku Haven` : 'Category Not Found',
+        description: category?.description || 'Category not found',
+    };
 }

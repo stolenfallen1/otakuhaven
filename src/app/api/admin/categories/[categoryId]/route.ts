@@ -26,9 +26,10 @@ export async function PATCH(request: Request, { params }: { params: { categoryId
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { name } = await request.json();
-        if (!name || typeof name !== "string") {
-            return NextResponse.json({ error: "Name is required" }, { status: 400 });
+        const { name, description } = await request.json();
+
+        if (!name || !description && (typeof name!== "string" || typeof description!== "string")) {
+            return NextResponse.json({ error: "Name and description are required" }, { status: 400 });
         }
 
         const duplicateCategory = await prisma.category.findFirst({
@@ -46,7 +47,10 @@ export async function PATCH(request: Request, { params }: { params: { categoryId
 
         const updatedCategory = await prisma.category.update({
             where: { id: params.categoryId },
-            data: { name: name.trim() }
+            data: { 
+                name: name.trim(),
+                description: description.trim()
+            }
         });
 
         return NextResponse.json(updatedCategory);

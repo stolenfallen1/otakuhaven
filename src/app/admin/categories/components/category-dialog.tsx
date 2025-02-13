@@ -10,12 +10,14 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 interface Category {
     id: string;
     name: string;
+    description: string;
 }
 
 interface CategoryDialogProps {
@@ -24,14 +26,20 @@ interface CategoryDialogProps {
 
 export function CategoryDialog({ category }: CategoryDialogProps) {
     const [open, setOpen] = React.useState(false);
-    const [name, setName] = React.useState(category?.name?? "");
+    const [formData, setFormData] = React.useState({
+        name: category?.name?? "",
+        description: category?.description?? "",
+    });
     const [loading, setLoading] = React.useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
     React.useEffect(() => {
         if (open) {
-            setName(category?.name?? "");
+            setFormData({
+                name: category?.name?? "",
+                description: category?.description?? "",
+            });
         } 
     }, [open, category]);
 
@@ -49,12 +57,11 @@ export function CategoryDialog({ category }: CategoryDialogProps) {
             const res = await fetch(url, {
                 method: isEditing ? "PATCH" : "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name }),
+                body: JSON.stringify(formData),
             });
 
-            const data = await res.json();
-
             if (!res.ok) {
+                const data = await res.json();
                 throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} category`);
             }
 
@@ -64,8 +71,6 @@ export function CategoryDialog({ category }: CategoryDialogProps) {
                 description: `Category ${isEditing ? 'updated' : 'created'} successfully`,
                 duration: 1500,
             });
-            
-            setName("");
             setOpen(false);
             router.refresh();
             
@@ -79,6 +84,10 @@ export function CategoryDialog({ category }: CategoryDialogProps) {
         } finally {
             setLoading(false);
         }
+    }
+
+    const handleChange = (field: string, value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value}));
     }
 
     return (
@@ -100,13 +109,21 @@ export function CategoryDialog({ category }: CategoryDialogProps) {
                 </DialogHeader>
                 <form onSubmit={onSubmit} className="grid gap-4 py-4">
                     <div className="grid gap-2">
-                        <label htmlFor="name">Category Name</label>
+                        <label htmlFor="name">Name</label>
                         <Input 
                             id="name"
-                            value={name}
+                            value={formData.name}
+                            onChange={(e) => handleChange('name', e.target.value)}
                             required
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter category name"
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <label htmlFor="description">Description</label>
+                        <Textarea 
+                            id="description"
+                            value={formData.description}
+                            onChange={(e) => handleChange('description', e.target.value)}
+                            required
                         />
                     </div>
                     <div className="mt-4 flex justify-end gap-2">

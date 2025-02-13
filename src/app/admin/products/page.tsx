@@ -58,23 +58,31 @@ export default async function ProductsPage() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                        {products.map((product) => (
-                            <tr key={product.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.category.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">₱ {product.price}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">{product.stock} pcs.</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                    <ProductDialog categories={categories} product={product} />
-                                    <DeleteButtonDialog 
-                                        title="Delete Product"
-                                        description={`Are you sure you want to delete "${product.name}"?`}
-                                        action={deleteProduct.bind(null, product.id)}
-                                        errorComponent={ServerError}
-                                    />
+                        {products.length === 0 ? (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-4 text-center text-sm text-muted-foreground">
+                                    No products found
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            products.map((product) => (
+                                <tr key={product.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.category.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">₱ {product.price}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.stock} pcs.</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                        <ProductDialog categories={categories} product={product} />
+                                        <DeleteButtonDialog 
+                                            title="Delete Product"
+                                            description={`Are you sure you want to delete "${product.name}"?`}
+                                            action={deleteProduct.bind(null, product.id)}
+                                            errorComponent={ServerError}
+                                        />
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

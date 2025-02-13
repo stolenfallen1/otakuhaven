@@ -1,9 +1,13 @@
+import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import HomeHeader from "./components/home-header";
 import Link from "next/link";
-import { categories } from "@/constants/categories";
 
-export default function Home() {
+export default async function Home() {
+  const categories = await prisma.category.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
   return (
     <div className="min-h-screen dark:bg-background">
       {/* Navigation Bar */}
@@ -61,7 +65,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map((category) => (
               <Link 
-                href={`/product/${category.slug}`}
+                href={`/product/${category.name.toLowerCase()}`}
                 key={category.id}
                 className="bg-card p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow text-center border dark:border-border hover:border-purple-400 dark:hover:border-purple-400"
               >
