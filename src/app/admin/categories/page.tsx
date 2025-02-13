@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { CategoryDialog } from "./components/category-dialog";
 import { DeleteButtonDialog } from "@/components/delete-btn-dialog";
 import { revalidatePath } from "next/cache";
+import { ServerError } from "@/components/server-error";
 
 export default async function CategoriesPage() {
     const categories = await prisma.category.findMany({
@@ -12,6 +13,14 @@ export default async function CategoriesPage() {
         'use server';
         
         try {
+            const hasProduct = await prisma.product.count({
+                where: { categoryId }
+            });
+
+            if (hasProduct > 0) {
+                throw new Error('Cannot delete category with associated products.');
+            }
+
             await prisma.category.delete({
                 where: { id: categoryId }
             });
@@ -55,6 +64,7 @@ export default async function CategoriesPage() {
                                                 title="Delete Category" 
                                                 description={`Are you sure you want to delete "${category.name}"?`}
                                                 action={deleteCategory.bind(null, category.id)}
+                                                errorComponent={ServerError}
                                             />
                                         </div>
                                     </td>

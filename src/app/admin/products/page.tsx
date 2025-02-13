@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { ProductDialog } from "./components/product-dialog";
 import { DeleteButtonDialog } from "@/components/delete-btn-dialog";
 import { revalidatePath } from "next/cache";
+import { ServerError } from "@/components/server-error";
 
 export default async function ProductsPage() {
     const [products, categories] = await Promise.all([
@@ -17,6 +18,17 @@ export default async function ProductsPage() {
         'use server';
 
         try {
+            const stillHasStocks = await prisma.product.count({
+                where: {
+                    id: productId,
+                    stock: { gt: 0 }
+                }
+            });
+
+            if (stillHasStocks > 0) {
+                throw new Error('Product still has stocks. Cannot delete.');
+            }
+
             await prisma.product.delete({
                 where: { id: productId }
             });
@@ -58,6 +70,7 @@ export default async function ProductsPage() {
                                         title="Delete Product"
                                         description={`Are you sure you want to delete "${product.name}"?`}
                                         action={deleteProduct.bind(null, product.id)}
+                                        errorComponent={ServerError}
                                     />
                                 </td>
                             </tr>

@@ -162,7 +162,6 @@ export function ProductDialog({ categories, product }: ProductDialogProps) {
                         <Input 
                             id="stock" 
                             type="number" 
-                            min="1" 
                             value={formData.stock}
                             onChange={(e) => handleChange('stock', e.target.value)}
                             required 

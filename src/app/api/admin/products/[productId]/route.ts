@@ -50,7 +50,7 @@ export async function PATCH(request: Request, { params }: { params: { productId:
                 name: name.trim(),
                 description: description.trim(),
                 price: parseFloat(price),
-                stock: stock ? parseInt(stock) : 1,
+                stock: stock ? parseInt(stock) : 0,
                 image: image?.trim(),
                 categoryId
             },
