@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -35,7 +34,7 @@ export function DeleteButtonDialog({ title, description, action }: DeleteButtonP
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <form action={action}>
-                        <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                        <Button variant="destructive" type="submit">Delete</Button>
                     </form>
                 </AlertDialogFooter>
             </AlertDialogContent>
