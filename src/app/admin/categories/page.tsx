@@ -1,11 +1,26 @@
-import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { CategoryDialog } from "./components/category-dialog";
+import { DeleteButtonDialog } from "@/components/delete-btn-dialog";
+import { revalidatePath } from "next/cache";
 
 export default async function CategoriesPage() {
     const categories = await prisma.category.findMany({
         orderBy: { createdAt: 'desc' }
     });
+
+    async function deleteCategory(categoryId: string) {
+        'use server';
+        
+        try {
+            await prisma.category.delete({
+                where: { id: categoryId }
+            });
+            revalidatePath('/admin/categories');
+        } catch (error) {
+            console.error('Failed to delete category:', error);
+            throw error;
+        }
+    }
 
     return (
         <div>
@@ -18,28 +33,30 @@ export default async function CategoriesPage() {
                 <table className="min-w-full divide-y divide-border">
                     <thead className="bg-muted">
                         <tr>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Name</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Created At</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Actions</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground w-full">Name</th>
+                            <th className="px-6 py-3 text-right text-sm font-semibold text-foreground">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                         {categories.length === 0 ? (
                             <tr>
-                                <td colSpan={3} className="px-6 py-4 text-center text-sm text-muted-foreground">
+                                <td colSpan={2} className="px-6 py-4 text-center text-sm text-muted-foreground">
                                     No categories found
                                 </td>
                             </tr>
                         ) : (
                             categories.map((category) => (
                                 <tr key={category.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{category.name}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                        {new Date(category.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                        <Button variant="outline" size="sm">Edit</Button>
-                                        <Button variant="destructive" size="sm">Delete</Button>
+                                    <td className="px-6 py-4 text-sm">{category.name}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <CategoryDialog category={category} />
+                                            <DeleteButtonDialog
+                                                title="Delete Category" 
+                                                description={`Are you sure you want to delete "${category.name}"?`}
+                                                action={deleteCategory.bind(null, category.id)}
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             ))

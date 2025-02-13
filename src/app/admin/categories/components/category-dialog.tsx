@@ -13,20 +13,41 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-export function CategoryDialog() {
+interface Category {
+    id: string;
+    name: string;
+}
+
+interface CategoryDialogProps {
+    category?: Category;
+}
+
+export function CategoryDialog({ category }: CategoryDialogProps) {
     const [open, setOpen] = React.useState(false);
-    const [name, setName] = React.useState("");
+    const [name, setName] = React.useState(category?.name?? "");
     const [loading, setLoading] = React.useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
-    async function onCreateCategory(e: React.FormEvent<HTMLFormElement>) {
+    React.useEffect(() => {
+        if (open) {
+            setName(category?.name?? "");
+        } 
+    }, [open, category]);
+
+    const isEditing = !!category;
+
+    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const res = await fetch("/api/admin/categories", {
-                method: "POST",
+            const url = isEditing 
+                ? `/api/admin/categories/${category.id}`
+                : "/api/admin/categories";
+
+            const res = await fetch(url, {
+                method: isEditing ? "PATCH" : "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name }),
             });
@@ -34,13 +55,13 @@ export function CategoryDialog() {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || "Failed to create category");
+                throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} category`);
             }
 
             toast({
                 variant: "success",
                 title: "Success",
-                description: "Category created successfully",
+                description: `Category ${isEditing ? 'updated' : 'created'} successfully`,
                 duration: 1500,
             });
             
@@ -52,7 +73,7 @@ export function CategoryDialog() {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error instanceof Error ? error.message : "Failed to create category",
+                description: error instanceof Error ? error.message : `Failed to ${isEditing ? 'update' : 'create'} category`,
                 duration: 2000,
             });
         } finally {
@@ -63,15 +84,21 @@ export function CategoryDialog() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-                    Add New Category
-                </Button>
+                {isEditing ? (
+                    <Button variant="outline" size="sm">
+                        Edit
+                    </Button>
+                ) : (
+                    <Button className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                        Add New Category
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add New Category</DialogTitle>
+                    <DialogTitle>{isEditing ? 'Edit Category' : 'Add New Category'}</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={onCreateCategory} className="grid gap-4 py-4">
+                <form onSubmit={onSubmit} className="grid gap-4 py-4">
                     <div className="grid gap-2">
                         <label htmlFor="name">Category Name</label>
                         <Input 
@@ -91,7 +118,7 @@ export function CategoryDialog() {
                             className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                             disabled={loading}
                         >
-                            {loading ? "Creating..." : "Create Category"}
+                            {loading ? (isEditing ? "Updating..." : "Creating...") : (isEditing ? "Update Category" : "Create Category")}
                         </Button>
                     </div>
                 </form>
