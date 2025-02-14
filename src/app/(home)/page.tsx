@@ -8,6 +8,11 @@ export default async function Home() {
     orderBy: { createdAt: 'desc' },
   });
 
+  const featuredProducts = await prisma.product.findMany({
+    where: { featured: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
   return (
     <div className="min-h-screen dark:bg-background">
       {/* Navigation Bar */}
@@ -36,19 +41,23 @@ export default async function Home() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3, 4].map((item) => (
-            <div key={item} className="group border dark:border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow bg-card">
+          {featuredProducts
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 6)
+            .map((fproduct) => (
+            <div key={fproduct.id} className="group border dark:border-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow bg-card">
               <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
                 <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50" />
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-semibold text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                    Limited Edition Figure
-                  </h3>
-                  <span className="text-purple-600 dark:text-purple-400 font-semibold">$99.99</span>
+              <div className="space-y-1">
+                <h3 className="text-xl font-semibold text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  {fproduct.name}
+                </h3>
+                <div className="flex justify-between items-center">
+                  <p className="text-md text-purple-600 dark:text-purple-400 font-semibold">₱{fproduct.price}</p>
+                  <p className="text-sm text-purple-500/90 dark:text-purple-300/80 font-extralight">{fproduct.stock} pcs. left</p>
                 </div>
-                <p className="text-muted-foreground">High-quality collectible anime figure with premium details...</p>
+                <p className="text-muted-foreground line-clamp-2">{fproduct.description}</p>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
                   View Details
                 </Button>

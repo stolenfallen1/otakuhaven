@@ -3,6 +3,8 @@ import { ProductDialog } from "./components/product-dialog";
 import { DeleteButtonDialog } from "@/components/delete-btn-dialog";
 import { revalidatePath } from "next/cache";
 import { ServerError } from "@/components/server-error";
+import { FeatureButton } from "./components/feature-button";
+import { ProductsTable } from "./components/products-table";
 
 export default async function ProductsPage() {
     const [products, categories] = await Promise.all([
@@ -13,6 +15,31 @@ export default async function ProductsPage() {
         }),
         prisma.category.findMany()
     ]);
+
+    async function toggleFeatureProduct(formData: FormData) {
+        'use server';
+        
+        const productId = formData.get('productId') as string;
+        const featured = formData.get('featured') === '1';  
+        
+        try {
+            if (featured) {  
+                await prisma.product.update({
+                    where: { id: productId },
+                    data: { featured: false }
+                });
+            } else { 
+                await prisma.product.update({
+                    where: { id: productId },
+                    data: { featured: true }
+                });
+            }
+            
+            revalidatePath('/admin/products');
+        } catch (error) {
+            throw error;
+        }
+    }
 
     async function deleteProduct(productId: string) {
         'use server';
@@ -46,46 +73,12 @@ export default async function ProductsPage() {
                 <ProductDialog categories={categories} />
             </div>
             
-            <div className="rounded-md border">
-                <table className="min-w-full divide-y divide-border">
-                    <thead className="bg-muted">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Name</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Category</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Price</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Stock</th>
-                            <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                        {products.length === 0 ? (
-                            <tr>
-                                <td colSpan={6} className="px-6 py-4 text-center text-sm text-muted-foreground">
-                                    No products found
-                                </td>
-                            </tr>
-                        ) : (
-                            products.map((product) => (
-                                <tr key={product.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.name}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.category.name}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">₱ {product.price}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm">{product.stock} pcs.</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                        <ProductDialog categories={categories} product={product} />
-                                        <DeleteButtonDialog 
-                                            title="Delete Product"
-                                            description={`Are you sure you want to delete "${product.name}"?`}
-                                            action={deleteProduct.bind(null, product.id)}
-                                            errorComponent={ServerError}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <ProductsTable 
+                data={products}
+                categories={categories}
+                deleteProduct={deleteProduct}
+                toggleFeature={toggleFeatureProduct}
+            />
         </div>
     );
 }

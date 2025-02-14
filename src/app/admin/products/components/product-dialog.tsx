@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { Pen } from "lucide-react";
 
 interface Product {
     id: string;
@@ -116,7 +117,7 @@ export function ProductDialog({ categories, product }: ProductDialogProps) {
             <DialogTrigger asChild>
                 {isEditing ? (
                     <Button variant="outline" size="sm">
-                        Edit
+                        <Pen />
                     </Button>
                 ) : (
                     <Button className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
