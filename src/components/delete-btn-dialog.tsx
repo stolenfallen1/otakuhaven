@@ -12,6 +12,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Trash2 } from "lucide-react";
 
 interface DeleteButtonDialogProps {
     title: string;
@@ -46,7 +47,7 @@ export function DeleteButtonDialog({
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">Delete</Button>
+                <Button variant="destructive" size="sm"><Trash2/></Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { Pen } from 'lucide-react';
 
 interface Category {
     id: string;
@@ -95,7 +96,7 @@ export function CategoryDialog({ category }: CategoryDialogProps) {
             <DialogTrigger asChild>
                 {isEditing ? (
                     <Button variant="outline" size="sm">
-                        Edit
+                        <Pen />
                     </Button>
                 ) : (
                     <Button className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
