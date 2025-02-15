@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import HomeHeader from "./components/home-header";
 import Link from "next/link";
+import { AddToCartButton } from "@/components/add-to-cart-button";
 
 export default async function Home() {
   const categories = await prisma.category.findMany({
@@ -50,17 +51,27 @@ export default async function Home() {
                 <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-xl font-semibold text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                <h3 className="text-xl font-semibold line-clamp-1 text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                   {fproduct.name}
                 </h3>
                 <div className="flex justify-between items-center">
                   <p className="text-md text-purple-600 dark:text-purple-400 font-semibold">₱{fproduct.price}</p>
                   <p className="text-sm text-purple-500/90 dark:text-purple-300/80 font-extralight">{fproduct.stock} pcs. left</p>
                 </div>
-                <p className="text-muted-foreground line-clamp-2">{fproduct.description}</p>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-                  View Details
-                </Button>
+                <section className="flex space-x-2 lg:space-x-4">
+                  <Link 
+                    href={`/product/${fproduct.id}`}
+                    className="w-full"
+                  >
+                    <Button 
+                      variant="outline"
+                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-950/50 dark:hover:text-purple-300"
+                    >
+                      View Details
+                    </Button>
+                  </Link>
+                  <AddToCartButton productId={fproduct.id} />
+                </section>
               </div>
             </div>
           ))}
@@ -74,7 +85,7 @@ export default async function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {categories.map((category) => (
               <Link 
-                href={`/product/${category.name.toLowerCase()}`}
+                href={`/products/${category.name.toLowerCase()}`}
                 key={category.id}
                 className="bg-card p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow text-center border dark:border-border hover:border-purple-400 dark:hover:border-purple-400"
               >

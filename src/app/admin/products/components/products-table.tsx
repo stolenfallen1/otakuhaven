@@ -50,27 +50,68 @@ export function ProductsTable({ data, categories, deleteProduct, toggleFeature }
     const columns: ColumnDef<Product>[] = [
         {
             accessorKey: "name",
-            header: "Name",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Name
+                        {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+                    </Button>
+                )
+            },
         },
         {
             accessorKey: "category.name",
-            header: "Category",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Category
+                        {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+                    </Button>
+                )
+            },
         },
         {
             accessorKey: "price",
-            header: "Price",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Price
+                        {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+                    </Button>
+                )
+            },
             cell: ({ row }) => {
                 return `₱ ${row.getValue("price")}`;
             },
         },
         {
             accessorKey: "stock",
-            header: "Stock",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Stock
+                        {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+                    </Button>
+                )
+            },
             cell: ({ row }) => {
                 return `${row.getValue("stock")} pcs.`;
             },
         },
         {
+            header: "Actions",
             id: "actions",
             cell: ({ row }) => {
                 const product = row.original;
@@ -108,6 +149,11 @@ export function ProductsTable({ data, categories, deleteProduct, toggleFeature }
             sorting,
             columnFilters,
         },
+        initialState: {
+            pagination: {
+                pageSize: 10,
+            }
+        }
     });
 
     return (
@@ -146,15 +192,15 @@ export function ProductsTable({ data, categories, deleteProduct, toggleFeature }
                         {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
-                            key={row.id}
-                            data-state={row.getIsSelected() && "selected"}
+                                key={row.id}
+                                data-state={row.getIsSelected() && "selected"}
                             >
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
-                                {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext()
-                                )}
+                                    {flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
+                                    )}
                                 </TableCell>
                             ))}
                             </TableRow>
@@ -173,6 +219,23 @@ export function ProductsTable({ data, categories, deleteProduct, toggleFeature }
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
+                <select
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => {
+                        table.setPageSize(Number(e.target.value));
+                    }}
+                    className="border rounded-md p-1 mr-1"
+                >
+                    {[10, 25, 50, 100].map((pageSize) => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+                <div className="text-sm text-gray-700 dark:text-gray-400">
+                    Page {table.getState().pagination.pageIndex + 1} of{' '}
+                    {table.getPageCount()}
+                </div>
                 <Button
                     variant="outline"
                     size="sm"

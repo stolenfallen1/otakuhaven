@@ -145,6 +145,7 @@ export function ProductDialog({ categories, product }: ProductDialogProps) {
                             id="description" 
                             value={formData.description}
                             onChange={(e) => handleChange('description', e.target.value)}
+                            required
                         />
                     </div>
                     <div className="grid gap-2">

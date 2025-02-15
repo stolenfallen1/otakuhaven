@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { ClientLogoutButton } from "@/components/client-logout-button";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "@/utils/jwt";
+import { CartCounter } from "@/components/cart-counter";
 
 async function getUser(token: string) {
     try {
@@ -25,6 +26,19 @@ export default async function HomeHeader() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token");
     const user = token ? await getUser(token.value) : null;
+
+    let userId: string | null = null;
+
+    if (token) {
+        try {
+            const payload = await verifyJWT(token.value);
+            if (payload && 'id' in payload) {
+                userId = payload.id as string;
+            }
+        } catch (error) {
+            console.error("Error verifying token:", error);
+        }
+    }
 
     return (
         <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b dark:border-border">
@@ -57,6 +71,7 @@ export default async function HomeHeader() {
                             </Link>
                         </>
                     )}
+                    <CartCounter userId={userId} />
                     <ThemeSwitcher />
                 </div>
             </div>

@@ -1,8 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ProductDialog } from "./components/product-dialog";
-import { DeleteButtonDialog } from "@/components/delete-btn-dialog";
 import { revalidatePath } from "next/cache";
-import { ServerError } from "@/components/server-error";
 import { FeatureButton } from "./components/feature-button";
 import { ProductsTable } from "./components/products-table";
 
