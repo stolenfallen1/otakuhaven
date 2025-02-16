@@ -64,6 +64,21 @@ export async function addToCart(formData: FormData) {
     }
 }
 
+export async function getProductDetails(productIds: string[]) {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                id: {
+                    in: productIds
+                }
+            }
+        });
+        return products;
+    } catch (error) {
+        throw new Error('Failed to fetch product details');
+    }
+}
+
 export async function getCartItemsCount(userId: string) {
     try {
         const cartItems = await prisma.cartItem.findMany({
@@ -74,11 +89,34 @@ export async function getCartItemsCount(userId: string) {
             }
         });
 
-        const count = cartItems.reduce((total, item) => total + item.quantity, 0);
-        revalidatePath('/', 'layout'); 
-        return count;
+        return cartItems.reduce((total, item) => total + item.quantity, 0);
     } catch (error) {
         console.error('Error fetching cart count:', error);
         return 0;
+    }
+}
+
+export async function updateCartItemQuantity(cartItemId: string, quantity: number) {
+    try {
+        await prisma.cartItem.update({
+            where: { id: cartItemId },
+            data: { quantity },
+        });
+        revalidatePath('/cart');
+        return { success: true };
+    } catch (error) {
+        throw new Error('Failed to update cart item quantity');
+    }
+}
+
+export async function removeCartItem(cartItemId: string) {
+    try {
+        await prisma.cartItem.delete({
+            where: { id: cartItemId },
+        });
+        revalidatePath('/cart');
+        return { success: true };
+    } catch (error) {
+        throw new Error('Failed to remove cart item');
     }
 }

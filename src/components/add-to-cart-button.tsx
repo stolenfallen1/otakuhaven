@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { localCart } from '@/utils/local_cart';
 import { addToCart } from '@/lib/actions/cart';
 import { useToast } from '@/hooks/use-toast';
+import { emitCartUpdate } from '@/lib/events/update-cart-counter';
 
 interface AddToCartButtonProps {
     productId: string;
@@ -27,6 +28,8 @@ export function AddToCartButton({ productId, quantity = 1 }: AddToCartButtonProp
             if (result.guest) {
                 localCart.addItem(productId, quantity);
             }
+
+            emitCartUpdate();
 
             toast({
                 variant: "success",

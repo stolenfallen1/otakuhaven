@@ -22,7 +22,22 @@ export const localCart = {
 
         localStorage.setItem('cart', JSON.stringify(items));
     },
-    
+
+    updateQuantity: (productId: string, quantity: number) => {
+        const items = localCart.getItems();
+        const existingItem = items.find(item => item.productId === productId);
+        if (existingItem) {
+            existingItem.quantity = quantity;
+            localStorage.setItem('cart', JSON.stringify(items));
+        }
+    },
+
+    removeItem: (productId: string) => {
+        const items = localCart.getItems();
+        const filteredItems = items.filter(item => item.productId !== productId);
+        localStorage.setItem('cart', JSON.stringify(filteredItems));
+    },
+
     clearCart: () => {
         localStorage.removeItem('cart');
     },
