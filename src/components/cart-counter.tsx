@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { localCart } from '@/utils/local_cart';
 import { ShoppingCart } from "lucide-react";
 import { getCartItemsCount } from '@/lib/actions/cart';
-import { useRouter } from "next/navigation";
+import { CART_UPDATED } from "@/lib/events/update-cart-counter";
 
 interface CartCounterProps {
     userId: string | null;
@@ -13,14 +13,12 @@ interface CartCounterProps {
 
 export function CartCounter({ userId }: CartCounterProps) {
     const [itemCount, setItemCount] = useState<number>(0);
-    const router = useRouter();
 
     useEffect(() => {
         const updateCount = async () => {
             if (userId) {
                 const count = await getCartItemsCount(userId);
                 setItemCount(count);
-                router.refresh(); 
             } else {
                 const localItems = localCart.getItems();
                 const count = localItems.reduce((total, item) => total + item.quantity, 0);
@@ -30,20 +28,19 @@ export function CartCounter({ userId }: CartCounterProps) {
 
         updateCount();
 
-        // Set up an interval to periodically check for updates
-        const interval = setInterval(updateCount, 2000);
-
+        // Listen for both storage and custom cart update events
+        window.addEventListener(CART_UPDATED, updateCount);
         if (!userId) {
             window.addEventListener('storage', updateCount);
         }
 
         return () => {
-            clearInterval(interval);
+            window.removeEventListener(CART_UPDATED, updateCount);
             if (!userId) {
                 window.removeEventListener('storage', updateCount);
             }
         };
-    }, [userId, router]);
+    }, [userId]);
 
     return (
         <Link href="/cart" className="relative text-foreground/60 hover:text-purple-600 dark:hover:text-purple-400">
