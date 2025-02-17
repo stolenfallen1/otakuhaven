@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { localCart } from '@/utils/local_cart';
 import { getProductDetails } from '@/lib/actions/cart';
-import { Trash2, Plus, Minus } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { updateCartItemQuantity, removeCartItem } from '@/lib/actions/cart';
 import { DeleteButtonDialog } from '@/components/delete-btn-dialog';
@@ -223,9 +223,20 @@ export function CartItems({ initialItems, userId }: CartItemsProps) {
 
                     <div className="flex justify-end gap-4">
                         <Link href="/">
-                            <Button variant="outline">Continue Shopping</Button>
+                            <Button 
+                                variant="outline"
+                                className="w-full border-purple-600 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-950/50 dark:hover:text-purple-300"
+                            >
+                                Continue Shopping
+                            </Button>
                         </Link>
-                        <Button>Proceed to Checkout</Button>
+                        <Link href="/">
+                            <Button
+                                className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-all"
+                            >
+                                Proceed to Checkout
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

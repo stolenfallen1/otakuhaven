@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import HomeHeader from "./components/home-header";
+import Footer from "@/components/footer";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 
@@ -96,6 +97,10 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <footer className="bg-card border-t dark:border-border">
+        <Footer />
+      </footer>
     </div>
   );
 }
