@@ -19,9 +19,9 @@ export default function Footer() {
                 <div className="flex flex-col items-center md:items-center">
                     <h4 className="text-lg font-semibold mb-2 text-foreground">Shop</h4>
                     <ul className="space-y-2 text-center md:text-center">
-                        <li><Link href="/new-arrivals" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">New Arrivals</Link></li>
-                        <li><Link href="/best-sellers" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Best Sellers</Link></li>
-                        <li><Link href="/sale" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Sale</Link></li>
+                        <li><Link href="products/new" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">New Arrivals</Link></li>
+                        <li><Link href="products/popular" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Best Sellers</Link></li>
+                        <li><Link href="products/sale" className="text-sm md:text-base text-muted-foreground hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Sale</Link></li>
                     </ul>
                 </div>
 

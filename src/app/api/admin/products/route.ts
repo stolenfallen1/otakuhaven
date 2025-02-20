@@ -30,9 +30,9 @@ export async function POST(request: Request) {
         const { name, description, price, stock, image, categoryId } = await request.json();
 
         // Validate required fields
-        if (!name || !description || !price || !stock || !categoryId) {
+        if (!name || !description || !price || !stock || !image || !categoryId) {
             return NextResponse.json({ 
-                error: "Name, description, price, ,stock and category are required" 
+                error: "Name, description, price, ,stock, image and category are required" 
             }, { status: 400 });
         }
 
