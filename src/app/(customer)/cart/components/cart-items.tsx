@@ -165,14 +165,14 @@ export function CartItems({ initialItems, userId }: CartItemsProps) {
                     {items.map((item) => (
                         <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg">
                             <div className="w-24 h-24 relative bg-muted rounded-md overflow-hidden">
-                                {item.product.image && (
+                                {/* {item.product.image && (
                                     <Image
                                         src={item.product.image}
                                         alt={item.product.name}
                                         fill
                                         className="object-cover"
                                     />
-                                )}
+                                )} */}
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-semibold">{item.product.name}</h3>

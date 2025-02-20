@@ -38,6 +38,8 @@ interface ProductDialogProps {
     product?: Product;
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export function ProductDialog({ categories, product }: ProductDialogProps) {
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
@@ -259,6 +261,16 @@ export function ProductDialog({ categories, product }: ProductDialogProps) {
                             onChange={(e) => {
                                 const selectedFile = e.target.files?.[0];
                                 if (selectedFile) {
+                                    if (selectedFile.size > MAX_FILE_SIZE) {
+                                        toast({
+                                            variant: "destructive",
+                                            title: "Error",
+                                            description: "Image size exceeds the maximum limit of 5MB.",
+                                            duration: 1500,
+                                        });
+                                        e.target.value = "";
+                                        return;
+                                    }     
                                     setFile(selectedFile);
                                 }
                             }}
