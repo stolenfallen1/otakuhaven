@@ -1,5 +1,4 @@
-"use client"
-
+import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import {
     Sheet,
@@ -8,10 +7,13 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { categories } from "@/constants/categories"
 import Link from "next/link"
 
-export function CategoriesSheet() {
+export async function CategoriesSheet() {
+    const categories = await prisma.category.findMany({
+        orderBy: { createdAt: 'desc' },
+    });
+
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -26,8 +28,8 @@ export function CategoriesSheet() {
                 <div className="grid gap-4 py-4">
                     {categories.map((category) => (
                         <Link
+                            href={`/products/${category.name.toLowerCase()}`}
                             key={category.id}
-                            href={`/product/${category.slug}`}
                             className="p-4 rounded-lg hover:bg-muted transition-colors"
                         >
                             <h3 className="text-lg font-semibold">{category.name}</h3>

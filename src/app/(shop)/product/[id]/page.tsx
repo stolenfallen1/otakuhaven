@@ -13,7 +13,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
     return (
         <div className="min-h-screen dark:bg-background">
-            <div className="container mx-auto px-4 py-16">
+            <div className="container mx-auto px-4">
                 <h1 className="text-4xl font-bold mb-4 text-foreground">{product.name}</h1>
                 <p className="text-muted-foreground mb-8">Category: {product.category.name}</p>
             </div>

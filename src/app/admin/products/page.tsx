@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { ProductDialog } from "./components/product-dialog";
 import { revalidatePath } from "next/cache";
-import { FeatureButton } from "./components/feature-button";
 import { ProductsTable } from "./components/products-table";
 
 export default async function ProductsPage() {
@@ -52,6 +52,20 @@ export default async function ProductsPage() {
 
             if (stillHasStocks > 0) {
                 throw new Error('Product still has stocks. Cannot delete.');
+            }
+
+            const product = await prisma.product.findUnique({
+                where: { id: productId },
+                select: { image: true }
+            });
+
+            if (product?.image) {
+                const path = product.image.split('otakuhaven-bucket/')[1];
+                if (path) {
+                    await supabase.storage
+                        .from('otakuhaven-bucket')
+                        .remove([path]);
+                }
             }
 
             await prisma.product.delete({
