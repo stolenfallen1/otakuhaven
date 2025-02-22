@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { localCart } from '@/utils/local_cart';
@@ -165,14 +164,15 @@ export function CartItems({ initialItems, userId }: CartItemsProps) {
                     {items.map((item) => (
                         <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg">
                             <div className="w-24 h-24 relative bg-muted rounded-md overflow-hidden">
-                                {/* {item.product.image && (
-                                    <Image
+                                {item.product.image ? (
+                                    <img
                                         src={item.product.image}
                                         alt={item.product.name}
-                                        fill
-                                        className="object-cover"
+                                        className="w-full h-full object-cover"
                                     />
-                                )} */}
+                                ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50" />
+                                )}
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-semibold">{item.product.name}</h3>
@@ -230,7 +230,7 @@ export function CartItems({ initialItems, userId }: CartItemsProps) {
                                 Continue Shopping
                             </Button>
                         </Link>
-                        <Link href="/">
+                        <Link href="/checkout">
                             <Button
                                 className="w-full bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-all"
                             >

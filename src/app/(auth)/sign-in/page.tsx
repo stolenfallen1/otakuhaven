@@ -55,7 +55,10 @@ export default function SignIn() {
                 duration: 1000,
             });
 
-            router.push("/");
+            const searchParams = new URLSearchParams(window.location.search);
+            const returnTo = searchParams.get('returnTo') || '/';
+            
+            router.push(decodeURIComponent(returnTo));
             router.refresh();
 
 
