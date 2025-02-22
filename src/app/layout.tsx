@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PayPalProvider } from "@/components/paypal-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { CartMigrationProvider } from "@/components/cart-migration-provider";
 import { cookies } from "next/headers";
@@ -54,10 +55,12 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <CartMigrationProvider userId={userId}>
-            {children}
-          </CartMigrationProvider>
-          <Toaster />
+          <PayPalProvider>
+            <CartMigrationProvider userId={userId}>
+              {children}
+            </CartMigrationProvider>
+            <Toaster />
+          </PayPalProvider>
         </ThemeProvider>
       </body>
     </html>

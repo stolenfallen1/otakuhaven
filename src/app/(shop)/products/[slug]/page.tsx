@@ -1,3 +1,4 @@
+import { ProductCard } from "@/components/product-card";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
@@ -9,7 +10,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             }
         },
         include: {
-            products: true
+            products: {
+                include: {
+                    category: true,
+                }
+            }
         }
     });
 
@@ -27,10 +32,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                         <p className="text-muted-foreground">No products available in this category.</p>
                     ) : (
                         category.products.map((product) => (
-                            <div key={product.id} className="border rounded-lg p-4">
-                                <h2>{product.name}</h2>
-                                <p>${product.price}</p>
-                            </div>
+                            <ProductCard key={product.id} product={product} />
                         ))
                     )}
                 </div>
