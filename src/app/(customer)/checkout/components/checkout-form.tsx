@@ -81,16 +81,34 @@ export function CheckoutForm({ userId, cartItems, total }: CheckoutFormProps) {
         setIsLoading(true);
         try {
             const result = await actions.order.capture();
-            console.log('Payment successful:', result);
+            // console.log('Payment successful:', result);
+            const response = await fetch("/api/user/orders", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    cartItems,
+                    total,
+                    shippingDetails: formData,
+                    paypalOrder: result,
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create order');
+            }
+
+            const order = await response.json();
+
             toast({
                 variant: "success",
                 title: "Payment successful",
                 description: "Your order has been placed and is being processed",
                 duration: 2000,
             });
-            router.push("/");
+            router.push(`/orders/${order.id}`);
         } catch (error: any) {
-            console.error('Payment failed', error);
+            // console.error('Payment failed', error);
             toast({
                 variant: "destructive",
                 title: "Payment failed",
